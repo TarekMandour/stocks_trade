@@ -1,0 +1,899 @@
+{
+    "bids_per_price": [
+        {
+            "volume_traded": 11000,
+            "order_price": 4.97,
+            "total_bids": 1292535,
+            "split": 2,
+            "volume_traded_cum_sum": 11000
+        },
+        {
+            "volume_traded": 69915,
+            "order_price": 4.96,
+            "total_bids": 1292535,
+            "split": 19,
+            "volume_traded_cum_sum": 80915
+        },
+        {
+            "volume_traded": 123144,
+            "order_price": 4.95,
+            "total_bids": 1292535,
+            "split": 34,
+            "volume_traded_cum_sum": 204059
+        },
+        {
+            "volume_traded": 9600,
+            "order_price": 4.94,
+            "total_bids": 1292535,
+            "split": 5,
+            "volume_traded_cum_sum": 213659
+        },
+        {
+            "volume_traded": 280445,
+            "order_price": 4.93,
+            "total_bids": 1292535,
+            "split": 7,
+            "volume_traded_cum_sum": 494104
+        },
+        {
+            "volume_traded": 34791,
+            "order_price": 4.92,
+            "total_bids": 1292535,
+            "split": 8,
+            "volume_traded_cum_sum": 528895
+        },
+        {
+            "volume_traded": 101764,
+            "order_price": 4.91,
+            "total_bids": 1292535,
+            "split": 9,
+            "volume_traded_cum_sum": 630659
+        },
+        {
+            "volume_traded": 28791,
+            "order_price": 4.9,
+            "total_bids": 1292535,
+            "split": 20,
+            "volume_traded_cum_sum": 659450
+        },
+        {
+            "volume_traded": 300,
+            "order_price": 4.89,
+            "total_bids": 1292535,
+            "split": 2,
+            "volume_traded_cum_sum": 659750
+        },
+        {
+            "volume_traded": 1886,
+            "order_price": 4.88,
+            "total_bids": 1292535,
+            "split": 3,
+            "volume_traded_cum_sum": 661636
+        },
+        {
+            "volume_traded": 6610,
+            "order_price": 4.87,
+            "total_bids": 1292535,
+            "split": 2,
+            "volume_traded_cum_sum": 668246
+        },
+        {
+            "volume_traded": 5000,
+            "order_price": 4.86,
+            "total_bids": 1292535,
+            "split": 1,
+            "volume_traded_cum_sum": 673246
+        },
+        {
+            "volume_traded": 69399,
+            "order_price": 4.85,
+            "total_bids": 1292535,
+            "split": 23,
+            "volume_traded_cum_sum": 742645
+        },
+        {
+            "volume_traded": 7000,
+            "order_price": 4.82,
+            "total_bids": 1292535,
+            "split": 2,
+            "volume_traded_cum_sum": 749645
+        },
+        {
+            "volume_traded": 15992,
+            "order_price": 4.81,
+            "total_bids": 1292535,
+            "split": 10,
+            "volume_traded_cum_sum": 765637
+        },
+        {
+            "volume_traded": 55830,
+            "order_price": 4.8,
+            "total_bids": 1292535,
+            "split": 25,
+            "volume_traded_cum_sum": 821467
+        },
+        {
+            "volume_traded": 800,
+            "order_price": 4.76,
+            "total_bids": 1292535,
+            "split": 1,
+            "volume_traded_cum_sum": 822267
+        },
+        {
+            "volume_traded": 12793,
+            "order_price": 4.75,
+            "total_bids": 1292535,
+            "split": 9,
+            "volume_traded_cum_sum": 835060
+        },
+        {
+            "volume_traded": 15000,
+            "order_price": 4.74,
+            "total_bids": 1292535,
+            "split": 1,
+            "volume_traded_cum_sum": 850060
+        },
+        {
+            "volume_traded": 400,
+            "order_price": 4.72,
+            "total_bids": 1292535,
+            "split": 1,
+            "volume_traded_cum_sum": 850460
+        },
+        {
+            "volume_traded": 4000,
+            "order_price": 4.71,
+            "total_bids": 1292535,
+            "split": 1,
+            "volume_traded_cum_sum": 854460
+        },
+        {
+            "volume_traded": 11924,
+            "order_price": 4.7,
+            "total_bids": 1292535,
+            "split": 3,
+            "volume_traded_cum_sum": 866384
+        },
+        {
+            "volume_traded": 3000,
+            "order_price": 4.69,
+            "total_bids": 1292535,
+            "split": 1,
+            "volume_traded_cum_sum": 869384
+        },
+        {
+            "volume_traded": 10000,
+            "order_price": 4.66,
+            "total_bids": 1292535,
+            "split": 1,
+            "volume_traded_cum_sum": 879384
+        },
+        {
+            "volume_traded": 450,
+            "order_price": 4.65,
+            "total_bids": 1292535,
+            "split": 2,
+            "volume_traded_cum_sum": 879834
+        },
+        {
+            "volume_traded": 1000,
+            "order_price": 4.62,
+            "total_bids": 1292535,
+            "split": 1,
+            "volume_traded_cum_sum": 880834
+        },
+        {
+            "volume_traded": 1042,
+            "order_price": 4.61,
+            "total_bids": 1292535,
+            "split": 2,
+            "volume_traded_cum_sum": 881876
+        },
+        {
+            "volume_traded": 7579,
+            "order_price": 4.6,
+            "total_bids": 1292535,
+            "split": 5,
+            "volume_traded_cum_sum": 889455
+        },
+        {
+            "volume_traded": 6000,
+            "order_price": 4.55,
+            "total_bids": 1292535,
+            "split": 3,
+            "volume_traded_cum_sum": 895455
+        },
+        {
+            "volume_traded": 25000,
+            "order_price": 4.52,
+            "total_bids": 1292535,
+            "split": 1,
+            "volume_traded_cum_sum": 920455
+        },
+        {
+            "volume_traded": 9101,
+            "order_price": 4.5,
+            "total_bids": 1292535,
+            "split": 5,
+            "volume_traded_cum_sum": 929556
+        },
+        {
+            "volume_traded": 1000,
+            "order_price": 4.45,
+            "total_bids": 1292535,
+            "split": 1,
+            "volume_traded_cum_sum": 930556
+        },
+        {
+            "volume_traded": 10000,
+            "order_price": 4.41,
+            "total_bids": 1292535,
+            "split": 1,
+            "volume_traded_cum_sum": 940556
+        },
+        {
+            "volume_traded": 4325,
+            "order_price": 4.4,
+            "total_bids": 1292535,
+            "split": 2,
+            "volume_traded_cum_sum": 944881
+        },
+        {
+            "volume_traded": 500,
+            "order_price": 4.35,
+            "total_bids": 1292535,
+            "split": 1,
+            "volume_traded_cum_sum": 945381
+        },
+        {
+            "volume_traded": 500,
+            "order_price": 4.31,
+            "total_bids": 1292535,
+            "split": 1,
+            "volume_traded_cum_sum": 945881
+        },
+        {
+            "volume_traded": 218,
+            "order_price": 4.3,
+            "total_bids": 1292535,
+            "split": 2,
+            "volume_traded_cum_sum": 946099
+        },
+        {
+            "volume_traded": 1000,
+            "order_price": 4.25,
+            "total_bids": 1292535,
+            "split": 1,
+            "volume_traded_cum_sum": 947099
+        },
+        {
+            "volume_traded": 220,
+            "order_price": 4.2,
+            "total_bids": 1292535,
+            "split": 1,
+            "volume_traded_cum_sum": 947319
+        },
+        {
+            "volume_traded": 210,
+            "order_price": 4.18,
+            "total_bids": 1292535,
+            "split": 2,
+            "volume_traded_cum_sum": 947529
+        },
+        {
+            "volume_traded": 339732,
+            "order_price": 4.15,
+            "total_bids": 1292535,
+            "split": 1,
+            "volume_traded_cum_sum": 1287261
+        },
+        {
+            "volume_traded": 1000,
+            "order_price": 4.1,
+            "total_bids": 1292535,
+            "split": 1,
+            "volume_traded_cum_sum": 1288261
+        },
+        {
+            "volume_traded": 2274,
+            "order_price": 4.08,
+            "total_bids": 1292535,
+            "split": 5,
+            "volume_traded_cum_sum": 1290535
+        },
+        {
+            "volume_traded": 2000,
+            "order_price": 4.0,
+            "total_bids": 1292535,
+            "split": 1,
+            "volume_traded_cum_sum": 1292535
+        }
+    ],
+    "asks_per_price": [
+        {
+            "volume_traded": 40000,
+            "order_price": 5.0,
+            "total_ask": 4318967,
+            "split": 1,
+            "volume_traded_cum_sum": 40000
+        },
+        {
+            "volume_traded": 99478,
+            "order_price": 5.01,
+            "total_ask": 4318967,
+            "split": 9,
+            "volume_traded_cum_sum": 139478
+        },
+        {
+            "volume_traded": 94152,
+            "order_price": 5.02,
+            "total_ask": 4318967,
+            "split": 11,
+            "volume_traded_cum_sum": 233630
+        },
+        {
+            "volume_traded": 1025,
+            "order_price": 5.03,
+            "total_ask": 4318967,
+            "split": 1,
+            "volume_traded_cum_sum": 234655
+        },
+        {
+            "volume_traded": 2514,
+            "order_price": 5.04,
+            "total_ask": 4318967,
+            "split": 1,
+            "volume_traded_cum_sum": 237169
+        },
+        {
+            "volume_traded": 35808,
+            "order_price": 5.05,
+            "total_ask": 4318967,
+            "split": 7,
+            "volume_traded_cum_sum": 272977
+        },
+        {
+            "volume_traded": 5000,
+            "order_price": 5.06,
+            "total_ask": 4318967,
+            "split": 1,
+            "volume_traded_cum_sum": 277977
+        },
+        {
+            "volume_traded": 200,
+            "order_price": 5.07,
+            "total_ask": 4318967,
+            "split": 1,
+            "volume_traded_cum_sum": 278177
+        },
+        {
+            "volume_traded": 11800,
+            "order_price": 5.08,
+            "total_ask": 4318967,
+            "split": 3,
+            "volume_traded_cum_sum": 289977
+        },
+        {
+            "volume_traded": 35451,
+            "order_price": 5.09,
+            "total_ask": 4318967,
+            "split": 7,
+            "volume_traded_cum_sum": 325428
+        },
+        {
+            "volume_traded": 86676,
+            "order_price": 5.1,
+            "total_ask": 4318967,
+            "split": 20,
+            "volume_traded_cum_sum": 412104
+        },
+        {
+            "volume_traded": 11204,
+            "order_price": 5.11,
+            "total_ask": 4318967,
+            "split": 2,
+            "volume_traded_cum_sum": 423308
+        },
+        {
+            "volume_traded": 19707,
+            "order_price": 5.12,
+            "total_ask": 4318967,
+            "split": 6,
+            "volume_traded_cum_sum": 443015
+        },
+        {
+            "volume_traded": 42015,
+            "order_price": 5.13,
+            "total_ask": 4318967,
+            "split": 10,
+            "volume_traded_cum_sum": 485030
+        },
+        {
+            "volume_traded": 84966,
+            "order_price": 5.14,
+            "total_ask": 4318967,
+            "split": 15,
+            "volume_traded_cum_sum": 569996
+        },
+        {
+            "volume_traded": 243224,
+            "order_price": 5.15,
+            "total_ask": 4318967,
+            "split": 66,
+            "volume_traded_cum_sum": 813220
+        },
+        {
+            "volume_traded": 23950,
+            "order_price": 5.16,
+            "total_ask": 4318967,
+            "split": 8,
+            "volume_traded_cum_sum": 837170
+        },
+        {
+            "volume_traded": 38017,
+            "order_price": 5.17,
+            "total_ask": 4318967,
+            "split": 8,
+            "volume_traded_cum_sum": 875187
+        },
+        {
+            "volume_traded": 39587,
+            "order_price": 5.18,
+            "total_ask": 4318967,
+            "split": 13,
+            "volume_traded_cum_sum": 914774
+        },
+        {
+            "volume_traded": 49550,
+            "order_price": 5.19,
+            "total_ask": 4318967,
+            "split": 11,
+            "volume_traded_cum_sum": 964324
+        },
+        {
+            "volume_traded": 123115,
+            "order_price": 5.2,
+            "total_ask": 4318967,
+            "split": 44,
+            "volume_traded_cum_sum": 1087439
+        },
+        {
+            "volume_traded": 62022,
+            "order_price": 5.21,
+            "total_ask": 4318967,
+            "split": 3,
+            "volume_traded_cum_sum": 1149461
+        },
+        {
+            "volume_traded": 23743,
+            "order_price": 5.22,
+            "total_ask": 4318967,
+            "split": 12,
+            "volume_traded_cum_sum": 1173204
+        },
+        {
+            "volume_traded": 42771,
+            "order_price": 5.23,
+            "total_ask": 4318967,
+            "split": 7,
+            "volume_traded_cum_sum": 1215975
+        },
+        {
+            "volume_traded": 323021,
+            "order_price": 5.24,
+            "total_ask": 4318967,
+            "split": 7,
+            "volume_traded_cum_sum": 1538996
+        },
+        {
+            "volume_traded": 193759,
+            "order_price": 5.25,
+            "total_ask": 4318967,
+            "split": 37,
+            "volume_traded_cum_sum": 1732755
+        },
+        {
+            "volume_traded": 11500,
+            "order_price": 5.26,
+            "total_ask": 4318967,
+            "split": 2,
+            "volume_traded_cum_sum": 1744255
+        },
+        {
+            "volume_traded": 6045,
+            "order_price": 5.27,
+            "total_ask": 4318967,
+            "split": 2,
+            "volume_traded_cum_sum": 1750300
+        },
+        {
+            "volume_traded": 22122,
+            "order_price": 5.28,
+            "total_ask": 4318967,
+            "split": 6,
+            "volume_traded_cum_sum": 1772422
+        },
+        {
+            "volume_traded": 70892,
+            "order_price": 5.29,
+            "total_ask": 4318967,
+            "split": 10,
+            "volume_traded_cum_sum": 1843314
+        },
+        {
+            "volume_traded": 497064,
+            "order_price": 5.3,
+            "total_ask": 4318967,
+            "split": 31,
+            "volume_traded_cum_sum": 2340378
+        },
+        {
+            "volume_traded": 19000,
+            "order_price": 5.31,
+            "total_ask": 4318967,
+            "split": 2,
+            "volume_traded_cum_sum": 2359378
+        },
+        {
+            "volume_traded": 12050,
+            "order_price": 5.32,
+            "total_ask": 4318967,
+            "split": 2,
+            "volume_traded_cum_sum": 2371428
+        },
+        {
+            "volume_traded": 19053,
+            "order_price": 5.33,
+            "total_ask": 4318967,
+            "split": 4,
+            "volume_traded_cum_sum": 2390481
+        },
+        {
+            "volume_traded": 33600,
+            "order_price": 5.34,
+            "total_ask": 4318967,
+            "split": 6,
+            "volume_traded_cum_sum": 2424081
+        },
+        {
+            "volume_traded": 154366,
+            "order_price": 5.35,
+            "total_ask": 4318967,
+            "split": 34,
+            "volume_traded_cum_sum": 2578447
+        },
+        {
+            "volume_traded": 15662,
+            "order_price": 5.36,
+            "total_ask": 4318967,
+            "split": 6,
+            "volume_traded_cum_sum": 2594109
+        },
+        {
+            "volume_traded": 3000,
+            "order_price": 5.37,
+            "total_ask": 4318967,
+            "split": 2,
+            "volume_traded_cum_sum": 2597109
+        },
+        {
+            "volume_traded": 42984,
+            "order_price": 5.38,
+            "total_ask": 4318967,
+            "split": 10,
+            "volume_traded_cum_sum": 2640093
+        },
+        {
+            "volume_traded": 28943,
+            "order_price": 5.39,
+            "total_ask": 4318967,
+            "split": 7,
+            "volume_traded_cum_sum": 2669036
+        },
+        {
+            "volume_traded": 83340,
+            "order_price": 5.4,
+            "total_ask": 4318967,
+            "split": 24,
+            "volume_traded_cum_sum": 2752376
+        },
+        {
+            "volume_traded": 35555,
+            "order_price": 5.41,
+            "total_ask": 4318967,
+            "split": 3,
+            "volume_traded_cum_sum": 2787931
+        },
+        {
+            "volume_traded": 16738,
+            "order_price": 5.43,
+            "total_ask": 4318967,
+            "split": 2,
+            "volume_traded_cum_sum": 2804669
+        },
+        {
+            "volume_traded": 42500,
+            "order_price": 5.44,
+            "total_ask": 4318967,
+            "split": 2,
+            "volume_traded_cum_sum": 2847169
+        },
+        {
+            "volume_traded": 5100,
+            "order_price": 5.45,
+            "total_ask": 4318967,
+            "split": 7,
+            "volume_traded_cum_sum": 2852269
+        },
+        {
+            "volume_traded": 90,
+            "order_price": 5.46,
+            "total_ask": 4318967,
+            "split": 1,
+            "volume_traded_cum_sum": 2852359
+        },
+        {
+            "volume_traded": 312590,
+            "order_price": 5.47,
+            "total_ask": 4318967,
+            "split": 7,
+            "volume_traded_cum_sum": 3164949
+        },
+        {
+            "volume_traded": 500,
+            "order_price": 5.48,
+            "total_ask": 4318967,
+            "split": 1,
+            "volume_traded_cum_sum": 3165449
+        },
+        {
+            "volume_traded": 8946,
+            "order_price": 5.49,
+            "total_ask": 4318967,
+            "split": 5,
+            "volume_traded_cum_sum": 3174395
+        },
+        {
+            "volume_traded": 362667,
+            "order_price": 5.5,
+            "total_ask": 4318967,
+            "split": 48,
+            "volume_traded_cum_sum": 3537062
+        },
+        {
+            "volume_traded": 5186,
+            "order_price": 5.52,
+            "total_ask": 4318967,
+            "split": 2,
+            "volume_traded_cum_sum": 3542248
+        },
+        {
+            "volume_traded": 4500,
+            "order_price": 5.53,
+            "total_ask": 4318967,
+            "split": 2,
+            "volume_traded_cum_sum": 3546748
+        },
+        {
+            "volume_traded": 24000,
+            "order_price": 5.54,
+            "total_ask": 4318967,
+            "split": 2,
+            "volume_traded_cum_sum": 3570748
+        },
+        {
+            "volume_traded": 20765,
+            "order_price": 5.55,
+            "total_ask": 4318967,
+            "split": 3,
+            "volume_traded_cum_sum": 3591513
+        },
+        {
+            "volume_traded": 10250,
+            "order_price": 5.57,
+            "total_ask": 4318967,
+            "split": 2,
+            "volume_traded_cum_sum": 3601763
+        },
+        {
+            "volume_traded": 1000,
+            "order_price": 5.58,
+            "total_ask": 4318967,
+            "split": 1,
+            "volume_traded_cum_sum": 3602763
+        },
+        {
+            "volume_traded": 5722,
+            "order_price": 5.59,
+            "total_ask": 4318967,
+            "split": 2,
+            "volume_traded_cum_sum": 3608485
+        },
+        {
+            "volume_traded": 59800,
+            "order_price": 5.6,
+            "total_ask": 4318967,
+            "split": 6,
+            "volume_traded_cum_sum": 3668285
+        },
+        {
+            "volume_traded": 2100,
+            "order_price": 5.65,
+            "total_ask": 4318967,
+            "split": 2,
+            "volume_traded_cum_sum": 3670385
+        },
+        {
+            "volume_traded": 12471,
+            "order_price": 5.66,
+            "total_ask": 4318967,
+            "split": 5,
+            "volume_traded_cum_sum": 3682856
+        },
+        {
+            "volume_traded": 2300,
+            "order_price": 5.67,
+            "total_ask": 4318967,
+            "split": 1,
+            "volume_traded_cum_sum": 3685156
+        },
+        {
+            "volume_traded": 6547,
+            "order_price": 5.68,
+            "total_ask": 4318967,
+            "split": 2,
+            "volume_traded_cum_sum": 3691703
+        },
+        {
+            "volume_traded": 6651,
+            "order_price": 5.69,
+            "total_ask": 4318967,
+            "split": 1,
+            "volume_traded_cum_sum": 3698354
+        },
+        {
+            "volume_traded": 299051,
+            "order_price": 5.7,
+            "total_ask": 4318967,
+            "split": 9,
+            "volume_traded_cum_sum": 3997405
+        },
+        {
+            "volume_traded": 388,
+            "order_price": 5.73,
+            "total_ask": 4318967,
+            "split": 1,
+            "volume_traded_cum_sum": 3997793
+        },
+        {
+            "volume_traded": 300,
+            "order_price": 5.74,
+            "total_ask": 4318967,
+            "split": 1,
+            "volume_traded_cum_sum": 3998093
+        },
+        {
+            "volume_traded": 200,
+            "order_price": 5.75,
+            "total_ask": 4318967,
+            "split": 1,
+            "volume_traded_cum_sum": 3998293
+        },
+        {
+            "volume_traded": 604,
+            "order_price": 5.78,
+            "total_ask": 4318967,
+            "split": 1,
+            "volume_traded_cum_sum": 3998897
+        },
+        {
+            "volume_traded": 13500,
+            "order_price": 5.79,
+            "total_ask": 4318967,
+            "split": 3,
+            "volume_traded_cum_sum": 4012397
+        },
+        {
+            "volume_traded": 12554,
+            "order_price": 5.8,
+            "total_ask": 4318967,
+            "split": 10,
+            "volume_traded_cum_sum": 4024951
+        },
+        {
+            "volume_traded": 35500,
+            "order_price": 5.81,
+            "total_ask": 4318967,
+            "split": 2,
+            "volume_traded_cum_sum": 4060451
+        },
+        {
+            "volume_traded": 7000,
+            "order_price": 5.82,
+            "total_ask": 4318967,
+            "split": 1,
+            "volume_traded_cum_sum": 4067451
+        },
+        {
+            "volume_traded": 2500,
+            "order_price": 5.83,
+            "total_ask": 4318967,
+            "split": 1,
+            "volume_traded_cum_sum": 4069951
+        },
+        {
+            "volume_traded": 8458,
+            "order_price": 5.84,
+            "total_ask": 4318967,
+            "split": 1,
+            "volume_traded_cum_sum": 4078409
+        },
+        {
+            "volume_traded": 250,
+            "order_price": 5.85,
+            "total_ask": 4318967,
+            "split": 1,
+            "volume_traded_cum_sum": 4078659
+        },
+        {
+            "volume_traded": 1000,
+            "order_price": 5.86,
+            "total_ask": 4318967,
+            "split": 1,
+            "volume_traded_cum_sum": 4079659
+        },
+        {
+            "volume_traded": 1789,
+            "order_price": 5.88,
+            "total_ask": 4318967,
+            "split": 4,
+            "volume_traded_cum_sum": 4081448
+        },
+        {
+            "volume_traded": 31269,
+            "order_price": 5.9,
+            "total_ask": 4318967,
+            "split": 3,
+            "volume_traded_cum_sum": 4112717
+        },
+        {
+            "volume_traded": 32439,
+            "order_price": 5.94,
+            "total_ask": 4318967,
+            "split": 8,
+            "volume_traded_cum_sum": 4145156
+        },
+        {
+            "volume_traded": 10046,
+            "order_price": 5.95,
+            "total_ask": 4318967,
+            "split": 4,
+            "volume_traded_cum_sum": 4155202
+        },
+        {
+            "volume_traded": 47330,
+            "order_price": 5.97,
+            "total_ask": 4318967,
+            "split": 4,
+            "volume_traded_cum_sum": 4202532
+        },
+        {
+            "volume_traded": 70305,
+            "order_price": 5.98,
+            "total_ask": 4318967,
+            "split": 5,
+            "volume_traded_cum_sum": 4272837
+        },
+        {
+            "volume_traded": 46130,
+            "order_price": 6.0,
+            "total_ask": 4318967,
+            "split": 5,
+            "volume_traded_cum_sum": 4318967
+        }
+    ],
+    "total_bids_and_asks": {
+        "total_bids": 1292535,
+        "total_asks": 4318967
+    }
+}
