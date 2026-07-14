@@ -3,8 +3,8 @@
 namespace Tests\Unit;
 
 use App\Models\AnalysisResult;
+use App\Services\CandleAnalyzerService;
 use App\Services\SignalCalculatorService;
-use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\Test;
 use Tests\TestCase;
 
@@ -15,7 +15,7 @@ class SignalCalculatorServiceTest extends TestCase
     protected function setUp(): void
     {
         parent::setUp();
-        $this->service = new SignalCalculatorService();
+        $this->service = new SignalCalculatorService(new CandleAnalyzerService);
     }
 
     #[Test]
@@ -141,6 +141,60 @@ class SignalCalculatorServiceTest extends TestCase
         $this->assertNull($result['entry_price']);
     }
 
+    #[Test]
+    public function pullback_targets_are_calculated_from_the_upper_entry_bound_not_the_current_high(): void
+    {
+        $result = $this->service->calculate(
+            AnalysisResult::DAY_SIGNAL_PULLBACK_BUY,
+            $this->makeStock([
+                'last_trade_price' => 10.25,
+                'high_price' => 10.25,
+                'high_price_limit' => 11.50,
+            ]),
+            $this->makeDepthMetrics(['support_level' => 10.20]),
+        );
+
+        $this->assertGreaterThan($result['entry_to'], $result['target_1']);
+        $this->assertGreaterThan(10.25, $result['target_1']);
+        $this->assertGreaterThan($result['target_1'], $result['target_2']);
+    }
+
+    #[Test]
+    public function entry_zone_never_uses_stale_support_above_the_current_price(): void
+    {
+        $result = $this->service->calculate(
+            AnalysisResult::DAY_SIGNAL_PULLBACK_BUY,
+            $this->makeStock(['last_trade_price' => 10.25]),
+            $this->makeDepthMetrics(['support_level' => 11.00]),
+            [
+                '2026-07-13T07:50:00Z' => 11.00,
+                '2026-07-13T08:50:00Z' => 11.10,
+                '2026-07-13T09:50:00Z' => 11.05,
+            ],
+        );
+
+        $this->assertLessThanOrEqual(10.25, $result['entry_from']);
+        $this->assertLessThanOrEqual(10.25, $result['entry_to']);
+    }
+
+    #[Test]
+    public function breakout_with_no_room_before_the_upper_price_limit_returns_no_trade_levels(): void
+    {
+        $result = $this->service->calculate(
+            AnalysisResult::DAY_SIGNAL_BREAKOUT_WATCH,
+            $this->makeStock([
+                'high_price' => 10.55,
+                'high_price_limit' => 10.60,
+            ]),
+            $this->makeDepthMetrics(),
+        );
+
+        $this->assertNull($result['entry_price']);
+        $this->assertNull($result['stop_loss']);
+        $this->assertNull($result['target_1']);
+        $this->assertNull($result['target_2']);
+    }
+
     // -------------------------------------------------------------------------
     // Helpers
     // -------------------------------------------------------------------------
@@ -150,18 +204,18 @@ class SignalCalculatorServiceTest extends TestCase
     {
         return array_merge([
             'last_trade_price' => 10.25,
-            'open_price'       => 10.00,
-            'high_price'       => 10.55,
-            'low_price'        => 9.90,
-            'close_price'      => 10.25,
-            'previous_close'   => 10.00,
-            'high_52_week'     => 15.00,
-            'low_52_week'      => 7.00,
+            'open_price' => 10.00,
+            'high_price' => 10.55,
+            'low_price' => 9.90,
+            'close_price' => 10.25,
+            'previous_close' => 10.00,
+            'high_52_week' => 15.00,
+            'low_52_week' => 7.00,
             'high_price_limit' => 11.50,
-            'low_price_limit'  => 9.00,
-            'bid_price'        => 10.24,
-            'ask_price'        => 10.26,
-            'round_digits'     => 2,
+            'low_price_limit' => 9.00,
+            'bid_price' => 10.24,
+            'ask_price' => 10.26,
+            'round_digits' => 2,
         ], $overrides);
     }
 
@@ -169,12 +223,12 @@ class SignalCalculatorServiceTest extends TestCase
     private function makeDepthMetrics(array $overrides = []): array
     {
         return array_merge([
-            'support_level'    => 9.95,
+            'support_level' => 9.95,
             'resistance_level' => 10.50,
-            'best_bid'         => 10.24,
-            'best_ask'         => 10.26,
-            'spread_pct'       => 0.20,
-            'imbalance_ratio'  => 1.2,
+            'best_bid' => 10.24,
+            'best_ask' => 10.26,
+            'spread_pct' => 0.20,
+            'imbalance_ratio' => 1.2,
         ], $overrides);
     }
 }

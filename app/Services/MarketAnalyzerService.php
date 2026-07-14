@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Models\AnalysisResult;
 use App\Models\AnalysisRun;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Log;
@@ -35,12 +36,12 @@ class MarketAnalyzerService
     private const SESSION_DURATION_MIN = 270;
 
     public function __construct(
-        private readonly ThndrApiService           $thndrApi,
-        private readonly MarketScoreService        $scoreService,
-        private readonly DepthAnalyzerService      $depthAnalyzer,
-        private readonly DayTradeAnalyzerService   $dayTradeAnalyzer,
-        private readonly SwingAnalyzerService      $swingAnalyzer,
-        private readonly SignalCalculatorService   $signalCalculator,
+        private readonly ThndrApiService $thndrApi,
+        private readonly MarketScoreService $scoreService,
+        private readonly DepthAnalyzerService $depthAnalyzer,
+        private readonly DayTradeAnalyzerService $dayTradeAnalyzer,
+        private readonly SwingAnalyzerService $swingAnalyzer,
+        private readonly SignalCalculatorService $signalCalculator,
         private readonly AnalysisPersistenceService $persistence,
     ) {}
 
@@ -80,16 +81,16 @@ class MarketAnalyzerService
             // ----------------------------------------------------------------
             // 4. حساب الـ score الأولي لكل نوع
             // ----------------------------------------------------------------
-            $dayScored   = $this->scoreAndSort($eligible, 'day', $elapsedFraction);
+            $dayScored = $this->scoreAndSort($eligible, 'day', $elapsedFraction);
             $swingScored = $this->scoreAndSort($eligible, 'swing', $elapsedFraction);
 
             // ----------------------------------------------------------------
             // 5. اختيار المرشحين لجلب الـ depth
             // ----------------------------------------------------------------
-            $dayTopN   = (int) config('market_analysis.day_trade.candidates_to_fetch_depth');
+            $dayTopN = (int) config('market_analysis.day_trade.candidates_to_fetch_depth');
             $swingTopN = (int) config('market_analysis.swing.candidates_to_fetch_depth');
 
-            $dayCandidates   = array_slice($dayScored, 0, $dayTopN);
+            $dayCandidates = array_slice($dayScored, 0, $dayTopN);
             $swingCandidates = array_slice($swingScored, 0, $swingTopN);
 
             // دمج بدون تكرار (نجلب الـ depth مرة واحدة لكل asset_id)
@@ -111,7 +112,7 @@ class MarketAnalyzerService
             // 8. تحليل Day Trade
             // ----------------------------------------------------------------
             $minDayScore = (float) config('market_analysis.day_trade.min_score_to_shortlist');
-            $topDayN     = (int) config('market_analysis.day_trade.top_n');
+            $topDayN = (int) config('market_analysis.day_trade.top_n');
 
             $dayResults = $this->analyzeCandidates(
                 $dayCandidates, $depthMap, $chartMap, 'day', $minDayScore, $topDayN, $elapsedFraction
@@ -121,14 +122,14 @@ class MarketAnalyzerService
             // 9. تحليل Swing
             // ----------------------------------------------------------------
             $minSwingScore = (float) config('market_analysis.swing.min_score_to_shortlist');
-            $topSwingN     = (int) config('market_analysis.swing.top_n');
+            $topSwingN = (int) config('market_analysis.swing.top_n');
 
             $swingResults = $this->analyzeCandidates(
                 $swingCandidates, $depthMap, $chartMap, 'swing', $minSwingScore, $topSwingN, $elapsedFraction
             );
 
             Log::info('[Analyzer] Analysis complete', [
-                'day_results'   => count($dayResults),
+                'day_results' => count($dayResults),
                 'swing_results' => count($swingResults),
             ]);
 
@@ -194,14 +195,14 @@ class MarketAnalyzerService
     // -------------------------------------------------------------------------
 
     /**
-     * @param  list<array<string, mixed>> $stocks
+     * @param  list<array<string, mixed>>  $stocks
      * @return list<array<string, mixed>>
      */
     private function filterEligible(array $stocks, float $elapsedFraction): array
     {
         $cfg = config('market_analysis.eligibility');
 
-        $minElapsedMin  = (int) ($cfg['session_min_elapsed_min'] ?? 30);
+        $minElapsedMin = (int) ($cfg['session_min_elapsed_min'] ?? 30);
         $elapsedMinutes = $elapsedFraction * self::SESSION_DURATION_MIN;
         $limitMarginPct = (float) ($cfg['allowed_limit_margin_pct'] ?? 0.5);
 
@@ -231,7 +232,7 @@ class MarketAnalyzerService
             } else {
                 // في بداية الجلسة: نستند للمتوسطات التاريخية كمعيار بديل
                 $projectedVolume = (float) ($stock['avg_5_day'] ?? 0);
-                $projectedValue  = $projectedVolume * (float) ($stock['last_trade_price'] ?? 0);
+                $projectedValue = $projectedVolume * (float) ($stock['last_trade_price'] ?? 0);
                 $projectedTrades = $cfg['min_total_trades'];  // نمرر الشرط إذا كان avg موجودًا
             }
 
@@ -250,9 +251,9 @@ class MarketAnalyzerService
             // ----------------------------------------------------------------
             // تصفية الأسهم المحدودة حركة (locked limit) باستخدام الحدود الفعلية للسهم
             // ----------------------------------------------------------------
-            $price          = (float) ($stock['last_trade_price'] ?? 0);
+            $price = (float) ($stock['last_trade_price'] ?? 0);
             $highPriceLimit = (float) ($stock['high_price_limit'] ?? 0);
-            $lowPriceLimit  = (float) ($stock['low_price_limit'] ?? 0);
+            $lowPriceLimit = (float) ($stock['low_price_limit'] ?? 0);
 
             if ($price > 0 && $highPriceLimit > 0) {
                 // إذا كان السعر في آخر limitMarginPct% من الحد الأعلى → محدود ارتفاعاً
@@ -279,7 +280,7 @@ class MarketAnalyzerService
     // -------------------------------------------------------------------------
 
     /**
-     * @param  list<array<string, mixed>> $stocks
+     * @param  list<array<string, mixed>>  $stocks
      * @return list<array{stock: array<string, mixed>, initial_score: float}>
      */
     private function scoreAndSort(array $stocks, string $type, float $elapsedFraction): array
@@ -304,7 +305,7 @@ class MarketAnalyzerService
     // -------------------------------------------------------------------------
 
     /**
-     * @param  list<array{stock: array<string, mixed>, initial_score: float}> $candidates
+     * @param  list<array{stock: array<string, mixed>, initial_score: float}>  $candidates
      * @return array<string, array<string, mixed>> keyed by asset_id
      */
     private function fetchDepthMap(string $token, array $candidates): array
@@ -320,7 +321,7 @@ class MarketAnalyzerService
 
             $raw = $this->thndrApi->getMarketDepth($token, $assetId);
             $depthMap[$assetId] = [
-                'raw'     => $raw,
+                'raw' => $raw,
                 'metrics' => $this->depthAnalyzer->analyze($raw),
             ];
         }
@@ -335,8 +336,8 @@ class MarketAnalyzerService
     /**
      * جلب بيانات الشموع لمجموعة المرشحين دفعةً واحدة.
      *
-     * @param  list<array{stock: array<string, mixed>, initial_score: float}> $candidates
-     * @return array<string, array<string, float>>  keyed by asset_id → [timestamp => close_price]
+     * @param  list<array{stock: array<string, mixed>, initial_score: float}>  $candidates
+     * @return array<string, array<string, float>> keyed by asset_id → [timestamp => close_price]
      */
     private function fetchChartMap(string $token, array $candidates): array
     {
@@ -353,7 +354,7 @@ class MarketAnalyzerService
         $chartMap = [];
         foreach (array_chunk($assetIds, 20) as $batch) {
             $batchData = $this->thndrApi->getCharts($token, $batch);
-            $chartMap  = array_merge($chartMap, $batchData);
+            $chartMap = array_merge($chartMap, $batchData);
         }
 
         return $chartMap;
@@ -364,9 +365,9 @@ class MarketAnalyzerService
     // -------------------------------------------------------------------------
 
     /**
-     * @param  list<array{stock: array<string, mixed>, initial_score: float}>   $candidates
-     * @param  array<string, array{raw: array<string, mixed>, metrics: array<string, float|int>}> $depthMap
-     * @param  array<string, array<string, float>>                               $chartMap
+     * @param  list<array{stock: array<string, mixed>, initial_score: float}>  $candidates
+     * @param  array<string, array{raw: array<string, mixed>, metrics: array<string, float|int>}>  $depthMap
+     * @param  array<string, array<string, float>>  $chartMap
      * @return list<array<string, mixed>>
      */
     private function analyzeCandidates(
@@ -381,11 +382,11 @@ class MarketAnalyzerService
         $results = [];
 
         foreach ($candidates as $candidate) {
-            $stock        = $candidate['stock'];
+            $stock = $candidate['stock'];
             $initialScore = $candidate['initial_score'];
-            $assetId      = $stock['asset_id'] ?? '';
+            $assetId = $stock['asset_id'] ?? '';
 
-            $depthEntry   = $depthMap[$assetId] ?? ['raw' => [], 'metrics' => []];
+            $depthEntry = $depthMap[$assetId] ?? ['raw' => [], 'metrics' => []];
             $depthMetrics = $depthEntry['metrics'];
 
             // بيانات الشموع لهذا السهم (timestamp => price)
@@ -404,11 +405,19 @@ class MarketAnalyzerService
 
             $signals = $this->signalCalculator->calculate($scores['signal'], $stock, $depthMetrics, $candles);
 
+            if (
+                $scores['signal'] !== AnalysisResult::SIGNAL_WATCH_ONLY
+                && $signals['entry_price'] === null
+                && $signals['entry_from'] === null
+            ) {
+                continue;
+            }
+
             $results[] = [
-                'stock'   => $stock,
-                'scores'  => $scores,
+                'stock' => $stock,
+                'scores' => $scores,
                 'signals' => $signals,
-                'depth'   => $depthEntry['raw'] ?? [],
+                'depth' => $depthEntry['raw'] ?? [],
             ];
         }
 
@@ -432,20 +441,20 @@ class MarketAnalyzerService
     /**
      * دمج قائمتين بدون تكرار بناءً على asset_id.
      *
-     * @param  list<array{stock: array<string, mixed>, initial_score: float}> $a
-     * @param  list<array{stock: array<string, mixed>, initial_score: float}> $b
+     * @param  list<array{stock: array<string, mixed>, initial_score: float}>  $a
+     * @param  list<array{stock: array<string, mixed>, initial_score: float}>  $b
      * @return list<array{stock: array<string, mixed>, initial_score: float}>
      */
     private function mergeUnique(array $a, array $b): array
     {
-        $seen   = [];
+        $seen = [];
         $merged = [];
 
         foreach (array_merge($a, $b) as $item) {
             $id = $item['stock']['asset_id'] ?? $item['stock']['symbol_code'] ?? '';
             if ($id && ! isset($seen[$id])) {
                 $seen[$id] = true;
-                $merged[]  = $item;
+                $merged[] = $item;
             }
         }
 

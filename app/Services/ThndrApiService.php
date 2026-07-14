@@ -21,9 +21,9 @@ class ThndrApiService
 
     public function __construct()
     {
-        $this->baseUrl    = config('market_analysis.thndr.base_url');
-        $this->market     = config('market_analysis.thndr.market');
-        $this->timeout    = config('market_analysis.thndr.timeout');
+        $this->baseUrl = config('market_analysis.thndr.base_url');
+        $this->market = config('market_analysis.thndr.market');
+        $this->timeout = config('market_analysis.thndr.timeout');
         $this->retryTimes = config('market_analysis.thndr.retry_times');
         $this->retrySleep = config('market_analysis.thndr.retry_sleep');
     }
@@ -42,14 +42,15 @@ class ThndrApiService
         Log::info('[ThndrApi] Fetching marketwatch', ['market' => $this->market]);
 
         try {
-            // $response = Http::withToken($token)
-            //     ->timeout($this->timeout)
-            //     ->retry($this->retryTimes, $this->retrySleep)
-            //     ->get($url, ['market' => $this->market]);
+            $response = Http::withToken($token)
+                ->timeout($this->timeout)
+                ->retry($this->retryTimes, $this->retrySleep)
+                ->get($url, ['market' => $this->market]);
 
-            // $response->throw();
-$response =  file_get_contents(storage_path('app/start_day.json'));
-            $data = json_decode($response, true);
+            $response->throw();
+            // $response =  file_get_contents(storage_path('app/start_day.json'));
+            // $data = json_decode($response, true);
+            $data = $response->json();
 
             if (! is_array($data)) {
                 throw new RuntimeException('Unexpected marketwatch response format.');
@@ -62,7 +63,7 @@ $response =  file_get_contents(storage_path('app/start_day.json'));
             return $stocks;
         } catch (RequestException $e) {
             Log::error('[ThndrApi] Marketwatch request failed', [
-                'status'  => $e->response?->status(),
+                'status' => $e->response?->status(),
                 'message' => $e->getMessage(),
             ]);
             throw new RuntimeException("Thndr API error (marketwatch): {$e->getMessage()}", 0, $e);
@@ -98,14 +99,15 @@ $response =  file_get_contents(storage_path('app/start_day.json'));
         } catch (RequestException $e) {
             Log::warning('[ThndrApi] Market depth request failed', [
                 'asset_id' => $assetId,
-                'status'   => $e->response?->status(),
-                'message'  => $e->getMessage(),
+                'status' => $e->response?->status(),
+                'message' => $e->getMessage(),
             ]);
+
             // نعيد مصفوفة فارغة حتى لا يوقف فشل سهم واحد التحليل كاملًا
             return [
-                'bids_per_price'        => [],
-                'asks_per_price'        => [],
-                'total_bids_and_asks'   => ['total_bids' => 0, 'total_asks' => 0],
+                'bids_per_price' => [],
+                'asks_per_price' => [],
+                'total_bids_and_asks' => ['total_bids' => 0, 'total_asks' => 0],
             ];
         }
     }
@@ -114,8 +116,8 @@ $response =  file_get_contents(storage_path('app/start_day.json'));
      * جلب بيانات الشموع (candles) لأسهم بعينها.
      *
      * @param  list<string>  $assetIds  قائمة بـ UUIDs للأسهم (حتى ~20 في المرة)
-     * @param  string        $option    خيار الفترة الزمنية: '1w-1h', '1d-1min', '1M', إلخ
-     * @return array<string, array<string, float>>  keyed by asset_id, then timestamp => close_price
+     * @param  string  $option  خيار الفترة الزمنية: '1w-1h', '1d-1min', '1M', إلخ
+     * @return array<string, array<string, float>> keyed by asset_id, then timestamp => close_price
      *
      * @throws RuntimeException
      */
@@ -125,11 +127,11 @@ $response =  file_get_contents(storage_path('app/start_day.json'));
             return [];
         }
 
-        $url    = "{$this->baseUrl}/charts";
+        $url = "{$this->baseUrl}/charts";
         $option = $option ?: config('market_analysis.thndr.chart_option', '1w-1h');
 
         Log::info('[ThndrApi] Fetching charts', [
-            'count'  => count($assetIds),
+            'count' => count($assetIds),
             'option' => $option,
         ]);
 
@@ -138,9 +140,9 @@ $response =  file_get_contents(storage_path('app/start_day.json'));
                 ->timeout($this->timeout)
                 ->retry($this->retryTimes, $this->retrySleep)
                 ->get($url, [
-                    'market'    => $this->market,
+                    'market' => $this->market,
                     'asset_ids' => implode(',', $assetIds),
-                    'option'    => $option,
+                    'option' => $option,
                 ]);
 
             $response->throw();
@@ -156,7 +158,7 @@ $response =  file_get_contents(storage_path('app/start_day.json'));
             return $data;
         } catch (RequestException $e) {
             Log::warning('[ThndrApi] Charts request failed', [
-                'status'  => $e->response?->status(),
+                'status' => $e->response?->status(),
                 'message' => $e->getMessage(),
             ]);
 
@@ -173,7 +175,7 @@ $response =  file_get_contents(storage_path('app/start_day.json'));
      * - مُغلَّف بـ key معروف: {"data": [...]} أو {"assets": [...]} إلخ
      * - أي قيمة array تحتوي على stock objects داخل الـ response
      *
-     * @param  array<mixed> $response
+     * @param  array<mixed>  $response
      * @return list<array<string, mixed>>
      */
     private function extractStocksList(array $response): array

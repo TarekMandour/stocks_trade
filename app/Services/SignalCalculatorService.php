@@ -15,9 +15,9 @@ class SignalCalculatorService
     ) {}
 
     /**
-     * @param  array<string, mixed>      $stock
+     * @param  array<string, mixed>  $stock
      * @param  array<string, float|int>  $depthMetrics
-     * @param  array<string, float>      $candles       [timestamp => close_price]
+     * @param  array<string, float>  $candles  [timestamp => close_price]
      * @return array{
      *   entry_price: float|null,
      *   entry_from: float|null,
@@ -30,12 +30,12 @@ class SignalCalculatorService
     public function calculate(string $signal, array $stock, array $depthMetrics, array $candles = []): array
     {
         return match ($signal) {
-            AnalysisResult::DAY_SIGNAL_PULLBACK_BUY   => $this->pullbackBuy($stock, $depthMetrics, $candles),
+            AnalysisResult::DAY_SIGNAL_PULLBACK_BUY => $this->pullbackBuy($stock, $depthMetrics, $candles),
             AnalysisResult::DAY_SIGNAL_BREAKOUT_WATCH => $this->breakoutWatch($stock, $depthMetrics, $candles),
-            AnalysisResult::DAY_SIGNAL_MOMENTUM_BUY   => $this->momentumBuy($stock, $depthMetrics, $candles),
+            AnalysisResult::DAY_SIGNAL_MOMENTUM_BUY => $this->momentumBuy($stock, $depthMetrics, $candles),
             AnalysisResult::SWING_SIGNAL_ACCUMULATION => $this->swingAccumulation($stock, $depthMetrics, $candles),
-            AnalysisResult::SWING_SIGNAL_MOMENTUM     => $this->swingMomentum($stock, $depthMetrics, $candles),
-            default                                    => $this->watchOnly($stock),
+            AnalysisResult::SWING_SIGNAL_MOMENTUM => $this->swingMomentum($stock, $depthMetrics, $candles),
+            default => $this->watchOnly($stock),
         };
     }
 
@@ -46,61 +46,64 @@ class SignalCalculatorService
     /** @param array<string, mixed> $stock @param array<string, float|int> $depthMetrics @param array<string, float> $candles */
     private function pullbackBuy(array $stock, array $depthMetrics, array $candles): array
     {
-        $cfg         = config('market_analysis.signals.pullback_buy');
-        $low         = (float) ($stock['low_price'] ?? 0);
-        $high        = (float) ($stock['high_price'] ?? 0);
-        $digits      = $this->roundDigits($stock);
+        $cfg = config('market_analysis.signals.pullback_buy');
+        $lastPrice = (float) ($stock['last_trade_price'] ?? 0);
+        $low = (float) ($stock['low_price'] ?? 0);
+        $digits = $this->roundDigits($stock);
         $depthSupport = (float) ($depthMetrics['support_level'] ?? 0);
 
         // نختار أقوى مستوى دعم: depth أو الشموع الأسبوعية
         $candleMetrics = $this->candleAnalyzer->analyze($candles);
         $candleSupport = $candleMetrics['support'];
 
-        $supportLevel = $depthSupport > 0 ? $depthSupport : $low;
-        if ($candleSupport > 0 && $candleSupport > $low) {
-            // نأخذ الأعلى بين دعم الـ depth والشموع (الأقرب للسعر)
-            $supportLevel = max($supportLevel, $candleSupport);
+        $entryRef = $this->nearestSupportAtOrBelow($lastPrice, [$depthSupport, $candleSupport, $low]);
+
+        if ($entryRef <= 0) {
+            return $this->watchOnly($stock);
         }
 
-        $entryRef  = $supportLevel > 0 ? $supportLevel : $low;
         $entryFrom = round($entryRef, $digits);
-        $entryTo   = round($entryFrom * (1 + 0.005), $digits);
+        $entryTo = round(min($entryFrom * 1.005, $lastPrice), $digits);
 
         $stopLoss = round($entryFrom * (1 - $cfg['stop_buffer_pct'] / 100), $digits);
-        $risk     = $entryFrom - $stopLoss;
+        $risk = $entryTo - $stopLoss;
 
-        $target1 = round($entryFrom + ($risk * $cfg['target1_rr']), $digits);
-        $target2 = round($entryFrom + ($risk * $cfg['target2_rr']), $digits);
+        $target1 = round($entryTo + ($risk * $cfg['target1_rr']), $digits);
+        $target2 = round($entryTo + ($risk * $cfg['target2_rr']), $digits);
 
-        // الهدف لا يتجاوز الهاي اليومي للـ day trade
-        $target1 = min($target1, $high);
-        $target2 = min($target2, $high * 1.01);
+        // الهدف لا يتجاوز الحد السعري الأعلى للجلسة.
+        $priceLimit = $this->dayPriceLimit($stock);
+        $target1 = $this->capAtPriceLimit($target1, $priceLimit, $digits);
+        $target2 = $this->capAtPriceLimit($target2, $priceLimit, $digits);
+
+        if (! $this->isValidEntryZone($entryFrom, $entryTo, $stopLoss, $target1, $target2)) {
+            return $this->watchOnly($stock);
+        }
 
         return [
             'entry_price' => null,
-            'entry_from'  => $entryFrom,
-            'entry_to'    => $entryTo,
-            'stop_loss'   => $stopLoss,
-            'target_1'    => $target1,
-            'target_2'    => $target2,
+            'entry_from' => $entryFrom,
+            'entry_to' => $entryTo,
+            'stop_loss' => $stopLoss,
+            'target_1' => $target1,
+            'target_2' => $target2,
         ];
     }
 
     /** @param array<string, mixed> $stock @param array<string, float|int> $depthMetrics @param array<string, float> $candles */
     private function breakoutWatch(array $stock, array $depthMetrics, array $candles): array
     {
-        $cfg    = config('market_analysis.signals.breakout_watch');
-        $high   = (float) ($stock['high_price'] ?? 0);
+        $cfg = config('market_analysis.signals.breakout_watch');
+        $high = (float) ($stock['high_price'] ?? 0);
         $digits = $this->roundDigits($stock);
 
         // الحد الأعلى اليومي: نحاول high_price_limit أولاً ثم max_limit كبديل
-        $rawLimit       = (float) ($stock['high_price_limit'] ?? $stock['max_limit'] ?? 0);
-        $highPriceLimit = $rawLimit > 0 ? $rawLimit : $high * 1.10;
+        $highPriceLimit = $this->dayPriceLimit($stock) ?: $high * 1.10;
 
         $depthResistance = (float) ($depthMetrics['resistance_level'] ?? 0);
 
         // نحسّن مستوى المقاومة بالشموع الأسبوعية
-        $candleMetrics    = $this->candleAnalyzer->analyze($candles);
+        $candleMetrics = $this->candleAnalyzer->analyze($candles);
         $candleResistance = $candleMetrics['resistance'];
 
         // نقطة المرجع: الأعلى بين الهاي اليومي ومقاومة الشموع (إذا كانت دون الحد)
@@ -113,7 +116,10 @@ class SignalCalculatorService
 
         // الدخول فوق الهاي بنسبة بسيطة، لا يتجاوز الحد الأعلى للسعر
         $entryPrice = round($breakoutRef * (1 + $cfg['entry_above_high_pct'] / 100), $digits);
-        $entryPrice = min($entryPrice, $highPriceLimit);
+
+        if ($entryPrice >= $highPriceLimit) {
+            return $this->watchOnly($stock);
+        }
 
         // وقف الخسارة أسفل نقطة المرجع
         $stopLoss = round($breakoutRef * (1 - $cfg['stop_below_high_pct'] / 100), $digits);
@@ -123,44 +129,61 @@ class SignalCalculatorService
             return $this->watchOnly($stock);
         }
 
-        $risk    = $entryPrice - $stopLoss;
+        $risk = $entryPrice - $stopLoss;
         $target1 = round($entryPrice + ($risk * $cfg['target1_rr']), $digits);
         $target2 = round($entryPrice + ($risk * $cfg['target2_rr']), $digits);
+        $target1 = $this->capAtPriceLimit($target1, $highPriceLimit, $digits);
+        $target2 = $this->capAtPriceLimit($target2, $highPriceLimit, $digits);
+
+        if (! $this->isValidSingleEntry($entryPrice, $stopLoss, $target1, $target2)) {
+            return $this->watchOnly($stock);
+        }
 
         return [
             'entry_price' => $entryPrice,
-            'entry_from'  => null,
-            'entry_to'    => null,
-            'stop_loss'   => $stopLoss,
-            'target_1'    => $target1,
-            'target_2'    => $target2,
+            'entry_from' => null,
+            'entry_to' => null,
+            'stop_loss' => $stopLoss,
+            'target_1' => $target1,
+            'target_2' => $target2,
         ];
     }
 
     /** @param array<string, mixed> $stock @param array<string, float|int> $depthMetrics @param array<string, float> $candles */
     private function momentumBuy(array $stock, array $depthMetrics, array $candles): array
     {
-        $cfg       = config('market_analysis.signals.momentum_buy');
+        $cfg = config('market_analysis.signals.momentum_buy');
         $lastPrice = (float) ($stock['last_trade_price'] ?? 0);
-        $bestAsk   = (float) ($depthMetrics['best_ask'] ?? $lastPrice);
-        $digits    = $this->roundDigits($stock);
+        $bestAsk = (float) ($depthMetrics['best_ask'] ?? $lastPrice);
+        $digits = $this->roundDigits($stock);
 
         $entryPrice = $bestAsk > 0 ? $bestAsk : $lastPrice;
         $entryPrice = round($entryPrice, $digits);
 
+        $priceLimit = $this->dayPriceLimit($stock);
+        if ($entryPrice <= 0 || ($priceLimit > 0 && $entryPrice >= $priceLimit)) {
+            return $this->watchOnly($stock);
+        }
+
         $stopLoss = round($entryPrice * (1 - $cfg['stop_buffer_pct'] / 100), $digits);
-        $risk     = $entryPrice - $stopLoss;
+        $risk = $entryPrice - $stopLoss;
 
         $target1 = round($entryPrice + ($risk * $cfg['target1_rr']), $digits);
         $target2 = round($entryPrice + ($risk * $cfg['target2_rr']), $digits);
+        $target1 = $this->capAtPriceLimit($target1, $priceLimit, $digits);
+        $target2 = $this->capAtPriceLimit($target2, $priceLimit, $digits);
+
+        if (! $this->isValidSingleEntry($entryPrice, $stopLoss, $target1, $target2)) {
+            return $this->watchOnly($stock);
+        }
 
         return [
             'entry_price' => $entryPrice,
-            'entry_from'  => null,
-            'entry_to'    => null,
-            'stop_loss'   => $stopLoss,
-            'target_1'    => $target1,
-            'target_2'    => $target2,
+            'entry_from' => null,
+            'entry_to' => null,
+            'stop_loss' => $stopLoss,
+            'target_1' => $target1,
+            'target_2' => $target2,
         ];
     }
 
@@ -171,22 +194,22 @@ class SignalCalculatorService
     /** @param array<string, mixed> $stock @param array<string, float|int> $depthMetrics @param array<string, float> $candles */
     private function swingAccumulation(array $stock, array $depthMetrics, array $candles): array
     {
-        $cfg       = config('market_analysis.signals.swing_accumulation_candidate');
-        $low52     = (float) ($stock['low_52_week'] ?? 0);
+        $cfg = config('market_analysis.signals.swing_accumulation_candidate');
+        $low52 = (float) ($stock['low_52_week'] ?? 0);
         $lastPrice = (float) ($stock['last_trade_price'] ?? 0);
-        $digits    = $this->roundDigits($stock);
+        $digits = $this->roundDigits($stock);
 
-        $depthSupport  = (float) ($depthMetrics['support_level'] ?? 0);
+        $depthSupport = (float) ($depthMetrics['support_level'] ?? 0);
         $candleMetrics = $this->candleAnalyzer->analyze($candles);
         $candleSupport = $candleMetrics['support'];
 
         // نختار أفضل مستوى دعم: الأعلى بين الثلاثة (يعني الأقرب للسعر الحالي)
-        $candidates = array_filter([$depthSupport, $candleSupport, $low52 * 1.02], fn ($v) => $v > 0);
-        $entryRef   = ! empty($candidates) ? max($candidates) : $lastPrice;
-        $entryRef   = min($entryRef, $lastPrice); // لا يتجاوز السعر الحالي
+        $entryRef = $this->nearestSupportAtOrBelow($lastPrice, [$depthSupport, $candleSupport, $low52 * 1.02]);
+        $entryRef = $entryRef > 0 ? $entryRef : $lastPrice;
+        $entryRef = min($entryRef, $lastPrice); // لا يتجاوز السعر الحالي
 
         $entryFrom = round($entryRef, $digits);
-        $entryTo   = round($entryFrom * 1.01, $digits); // منطقة دخول 1%
+        $entryTo = round(min($entryFrom * 1.01, $lastPrice), $digits); // منطقة دخول 1%
 
         $stopLoss = round($entryFrom * (1 - $cfg['stop_buffer_pct'] / 100), $digits);
         // الوقف لا يقل عن 2% أسفل الـ low السنوي (حماية مضاعفة)
@@ -194,35 +217,43 @@ class SignalCalculatorService
             $stopLoss = max($stopLoss, round($low52 * 0.97, $digits));
         }
 
-        $risk    = $entryFrom - $stopLoss;
-        $target1 = round($entryFrom + ($risk * $cfg['target1_rr']), $digits);
-        $target2 = round($entryFrom + ($risk * $cfg['target2_rr']), $digits);
+        $risk = $entryTo - $stopLoss;
+        $target1 = round($entryTo + ($risk * $cfg['target1_rr']), $digits);
+        $target2 = round($entryTo + ($risk * $cfg['target2_rr']), $digits);
 
         // نحدد الهدف الأول عند مستوى المقاومة من الشموع إذا كان منطقياً
-        if ($candleMetrics['resistance'] > $entryFrom && $candleMetrics['resistance'] < $target2) {
+        if ($candleMetrics['resistance'] > $entryTo && $candleMetrics['resistance'] < $target1) {
             $target1 = round(min($target1, $candleMetrics['resistance']), $digits);
+        }
+
+        if (! $this->isValidEntryZone($entryFrom, $entryTo, $stopLoss, $target1, $target2)) {
+            return $this->watchOnly($stock);
         }
 
         return [
             'entry_price' => null,
-            'entry_from'  => $entryFrom,
-            'entry_to'    => $entryTo,
-            'stop_loss'   => $stopLoss,
-            'target_1'    => $target1,
-            'target_2'    => $target2,
+            'entry_from' => $entryFrom,
+            'entry_to' => $entryTo,
+            'stop_loss' => $stopLoss,
+            'target_1' => $target1,
+            'target_2' => $target2,
         ];
     }
 
     /** @param array<string, mixed> $stock @param array<string, float|int> $depthMetrics @param array<string, float> $candles */
     private function swingMomentum(array $stock, array $depthMetrics, array $candles): array
     {
-        $cfg       = config('market_analysis.signals.swing_momentum_candidate');
+        $cfg = config('market_analysis.signals.swing_momentum_candidate');
         $lastPrice = (float) ($stock['last_trade_price'] ?? 0);
-        $bestAsk   = (float) ($depthMetrics['best_ask'] ?? $lastPrice);
-        $digits    = $this->roundDigits($stock);
+        $bestAsk = (float) ($depthMetrics['best_ask'] ?? $lastPrice);
+        $digits = $this->roundDigits($stock);
 
         $entryPrice = $bestAsk > 0 ? $bestAsk : $lastPrice;
         $entryPrice = round($entryPrice, $digits);
+
+        if ($entryPrice <= 0) {
+            return $this->watchOnly($stock);
+        }
 
         // وقف الخسارة: نستخدم دعم الشموع إذا كان أعلى من الوقف المحسوب
         $candleMetrics = $this->candleAnalyzer->analyze($candles);
@@ -234,17 +265,21 @@ class SignalCalculatorService
             $stopLoss = round($candleSupport * 0.99, $digits);
         }
 
-        $risk    = $entryPrice - $stopLoss;
+        $risk = $entryPrice - $stopLoss;
         $target1 = round($entryPrice + ($risk * $cfg['target1_rr']), $digits);
         $target2 = round($entryPrice + ($risk * $cfg['target2_rr']), $digits);
 
+        if (! $this->isValidSingleEntry($entryPrice, $stopLoss, $target1, $target2)) {
+            return $this->watchOnly($stock);
+        }
+
         return [
             'entry_price' => $entryPrice,
-            'entry_from'  => null,
-            'entry_to'    => null,
-            'stop_loss'   => $stopLoss,
-            'target_1'    => $target1,
-            'target_2'    => $target2,
+            'entry_from' => null,
+            'entry_to' => null,
+            'stop_loss' => $stopLoss,
+            'target_1' => $target1,
+            'target_2' => $target2,
         ];
     }
 
@@ -253,11 +288,11 @@ class SignalCalculatorService
     {
         return [
             'entry_price' => null,
-            'entry_from'  => null,
-            'entry_to'    => null,
-            'stop_loss'   => null,
-            'target_1'    => null,
-            'target_2'    => null,
+            'entry_from' => null,
+            'entry_to' => null,
+            'stop_loss' => null,
+            'target_1' => null,
+            'target_2' => null,
         ];
     }
 
@@ -269,5 +304,54 @@ class SignalCalculatorService
     private function roundDigits(array $stock): int
     {
         return (int) ($stock['round_digits'] ?? 2);
+    }
+
+    /** @param list<float> $levels */
+    private function nearestSupportAtOrBelow(float $price, array $levels): float
+    {
+        $validLevels = array_filter(
+            $levels,
+            fn (float $level): bool => $level > 0 && $level <= $price,
+        );
+
+        return empty($validLevels) ? 0.0 : max($validLevels);
+    }
+
+    /** @param array<string, mixed> $stock */
+    private function dayPriceLimit(array $stock): float
+    {
+        foreach (['high_price_limit', 'max_limit'] as $key) {
+            $priceLimit = (float) ($stock[$key] ?? 0);
+
+            if ($priceLimit > 0) {
+                return $priceLimit;
+            }
+        }
+
+        return 0.0;
+    }
+
+    private function capAtPriceLimit(float $price, float $priceLimit, int $digits): float
+    {
+        return round($priceLimit > 0 ? min($price, $priceLimit) : $price, $digits);
+    }
+
+    private function isValidSingleEntry(float $entry, float $stopLoss, float $target1, float $target2): bool
+    {
+        return $entry > 0
+            && $stopLoss > 0
+            && $stopLoss < $entry
+            && $target1 > $entry
+            && $target2 > $target1;
+    }
+
+    private function isValidEntryZone(float $entryFrom, float $entryTo, float $stopLoss, float $target1, float $target2): bool
+    {
+        return $entryFrom > 0
+            && $entryTo >= $entryFrom
+            && $stopLoss > 0
+            && $stopLoss < $entryFrom
+            && $target1 > $entryTo
+            && $target2 > $target1;
     }
 }
